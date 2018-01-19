@@ -22,7 +22,7 @@ from timeit import default_timer as timer
 
 def main():
     #file I/O
-    file = open("in2.txt", "r")
+    file = open("example.txt", "r")
     sort_type = file.readline()
     print(sort_type)
     unsorted_list = []
@@ -42,52 +42,49 @@ def main():
     ##time comparison of sorts
     start = timer()
 
-    sorted_list = cyclesort(unsorted_list)
+    sorted_list = sort_handler(sort_type, unsorted_list)
 
     end = timer()
-    print(end - start)
+    print("t: " + str(end - start))
     print (sorted_list)
 
     file.close()
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #sort handler
 def sort_handler(sort_type, list):
-    sorted_list = []
     size = len(list)
-    if (sort_type == "bubblesort"):
-        sorted_list = bubblesort(list)
+    if (sort_type == "bubblesort\n"):
+       return bubblesort(list)
 
-    if (sort_type == "insertionsort"):
-        sorted_list = insertionsort(list)
+    if (sort_type == "insertionsort\n"):
+        return insertionsort(list)
 
-    if (sort_type == "mergesort"):
-        sorted_list = mergesort(list)
+    if (sort_type == "mergesort\n"):
+        return mergesort(list)
 
-    if (sort_type == "quicksort"):
-        sorted_list = quicksort(list, 0, size-1)
+    if (sort_type == "quicksort\n"):
+        return quicksort(list, 0, size-1)
 
-    if (sort_type == "quicksort_r"):
-        sorted_list = quicksort_r(list, 0, size -1)
+    if (sort_type == "quicksort_r\n"):
+        return quicksort_r(list, 0, size -1)
 
-    if (sort_type == "selectionsort"):
-        sorted_list = selectionsort(list)
+    if (sort_type == "selectionsort\n"):
+        return selectionsort(list)
 
-    if (sort_type == "heapsort"):
-        sorted_list = heapsort(list)
+    if (sort_type == "heapsort\n"):
+        return heapsort(list)
 
-    if (sort_type == "countingsort"):
-        sorted_list = countingsort(list)
+    if (sort_type == "countingsort\n"):
+        return countingsort(list)
 
-    if (sort_type == "radixsort"):
-        print("tbd")
+    if (sort_type == "radixsort\n"):
+        return radixsort(list)
 
-    if (sort_type == "bogosort"):
-        sorted_list = bogosort(list)
+    if (sort_type == "bogosort\n"):
+        return bogosort(list)
 
-    if (sort_type == "cyclesort"):
-        sorted_list =   cyclesort(list)
-
-    return sorted_list
+    if (sort_type == "cyclesort\n"):
+        return cyclesort(list)
 
 ###################################################################
 #Bubblesort ( runs in O(n^2))
@@ -382,34 +379,63 @@ def countingsort(list):
 # we modify the above countingsort code to take in a base argument as a parameter
 # note that the added space complexity (due to counting sort implemented as a subroutine) may be a turnoff, but it is stable
 # this algorithm also has a cool history, radix sort has its roots in old mechanical calculators
+def radixsort(list):
+    max_length = False
+    b, d, tmp = 10, 1, -1
+    while not max_length:
+        max_length = True
+        buckets = [[] for x in range (b)]
 
+        for x in list:
+            tmp = x//d
+            buckets[tmp %b].append(x)
+            if max_length and tmp>0:
+                max_length = False
+
+        tmp = 0
+        for j in range(b):
+            b_j = buckets[j]
+            for k in b_j:
+                list[tmp] = k
+                tmp+=1
+        d*=b
+    return list
 
 ###################################################################
 # cyclesort; runs in O(n^2).. no exeptions
 # really you should just use bubble/insertion if you are committed to being this slow
-##needs fixing---- currently i think it gets stuck in an infinite loop
-
 def cyclesort(list):
     size = len(list)
-    for c_0 in range (0, size-1):
+    for c_0 in range(0, size - 1):
         item = list[c_0]
-        index = c_0
-        for  i in range ( c_0 +1, size):
-            if list[i]< item:
-                index+=1
-        while item == list[index]:
-            index+=1
-            print(list)
-            list[index], item = item, list[index]
 
-        while index!=c_0:
-            index=c_0
-            for i in range (c_0+1, size):
-                index+=1
+        index = c_0
+        for i in range(c_0 + 1, size):
+            if list[i] < item:
+                index += 1
+
+        if index == c_0:
+            continue
+
+        while item == list[index]:
+            index += 1
+        list[index], item = item, list[index]
+
+        # Rotate the rest of the cycle.
+        while index!= c_0:
+
+            # Find where to put the item.
+            index = c_0
+            for i in range(c_0 + 1, len(list)):
+                if list[i] < item:
+                    index += 1
+
+            # Put the item there or right after any duplicates.
             while item == list[index]:
                 index += 1
-                list[index], item = item, list[index]
-    return list
+            list[index], item = item, list[index]
+        return list
+
 ###################################################################
 # bogosort; runs on average in O((n+1)!).... yup that's a factorial
 # If you're a gambler how can you not love bogo?!
