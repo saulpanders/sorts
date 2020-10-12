@@ -1,5 +1,5 @@
 # sorts.py
-# Paul Sanders
+# @saulpanders
 # 1/10/17
 
 ## Designed to sort a list of unsorted number values (currently non-negative ints), where the input is provided via a text file.
